@@ -1,0 +1,34 @@
+// принимает строчку и определяет возможно ли из неё сделать перевёртыш если выкинуть из неё один символ
+
+global.reverse = string s: string => {
+    if (s.Length < 2) return s;
+    charArray = s.ToCharArray();
+    using System.Array;
+    Array.Reverse(charArray);
+    return new string(charArray);
+};
+
+is_palindrom_internal = recursive (s, sliced) => {
+    if (s.Length < 2)
+        return "палиндром";
+        
+    half = (s.Length / 2) as i32;
+    if (s.Substring(0i32, half) == global.reverse(s).Substring(0i32, half))
+        return "палиндром";
+    if (sliced)
+        return "не палиндром";
+    
+    using string;
+    i = 0;
+    while ((i += 1) <= s.Length) {
+        if (upper.is_palindrom_internal(
+            string.Concat(
+                s.Substring(0i32, (i - 1) as i32),
+                s.Substring(i as i32)
+            ), true) == "палиндром")
+            return $"палиндром без {i} буквы";
+    }
+    
+    return "не палиндром";
+};
+is_palindrom = string s: bool => upper.is_palindrom_internal(s, false);
