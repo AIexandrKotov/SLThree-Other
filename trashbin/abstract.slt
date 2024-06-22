@@ -1,0 +1,21 @@
+context TBase {
+    constructor() {
+        abstract this.get_x();
+        this.get_x2() => this.get_x() * 2;
+    };
+}
+
+context T1: TBase() {
+    get_x() => 25;
+}
+T1.get_x2();
+
+context TBase {
+    get_x() => this.object.x;
+    set_x(x) => this.object.x = x;
+    context object {
+        x = 2;
+    }
+}
+new context T1 : TBase;
+T1.get_x2();
