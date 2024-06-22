@@ -1,0 +1,117 @@
+a = bubbles => {
+    dict<i64, i64> moneys = {
+        1: 0,
+        17: 0,
+        34: 0,
+        85: 0,
+        493: 0,
+        986: 0,
+        2465: 0,
+    };
+    foreach (x in bubbles) {
+        if (x == 1)
+            moneys[1] += 1;
+        else {
+            flag = false;
+            while (x > 1)
+            {
+                if (flag) break;
+                flag = true;
+                foreach (d in [2465, 986, 493, 85, 34, 17, 1])
+                    if (x > 1 && x >= d && moneys[d] > 0) {
+                        x -= d;
+                        moneys[d] -= 1;
+                        flag = false;
+                    }
+            }
+            if (x > 1) return "не хватило сдачи";
+        }
+    }
+    return moneys;
+};
+b = (list<tuple<i64, array<any>>> bubbles) => {
+    using linq as linq;
+    sb = new System.Text.StringBuilder();
+    moneys = {
+        1: 0,
+        17: 0,
+        34: 0,
+        85: 0,
+        493: 0,
+        986: 0,
+        2465: 0,
+    };
+    i = -1;
+    using console;
+    while ((i += 1) < bubbles.Count) {
+        (bubs, money) = bubbles[i];
+        //money = money |> linq.order_by_desc(x => x) |> linq.to_array();
+        if (bubs > linq.sum(money)) {
+            sb.AppendLine($"Отказ. Клиент #{i} заказал больше чем может оплатить");
+            continue;
+        }
+        
+        now = moneys |> linq.to_enumerable() |> linq.to_dict(x => x.Key, x => x.Value);
+        foreach (x in money) {
+            bubs -= x;
+            now[x] += 1;
+            if (bubs <= 0) break;
+        }
+        change = -bubs;
+        flag = false;
+        while (change > 0) {
+            if (flag) break;
+            flag = true;
+            foreach (coin in [2465, 986, 493, 85, 34, 17, 1])
+                if (change >= coin && now[coin] > 0) {
+                    change -= coin;
+                    now[coin] -= 1;
+                    flag = false;
+                    break;
+                }
+        }
+        if (change > 0) {
+            steel = 0;
+            foreach (n in now) {
+                steel += (n.Key * n.Value) - (n.Key * moneys[n.Key]);
+                moneys[n.Key] = n.Value;
+            }
+            sb.AppendLine($"Отказ. Не хватает сдачи клиенту #{i}. Воруем у него {steel}!");
+        }
+        else {
+            foreach (n in now)
+                moneys[n.Key] = n.Value;
+        }
+        console.writeln($"after #{i}: {moneys |> linq.to_enumerable() |> linq.select(x => $"{x.Value}") |> linq.jts()}");
+    }
+    return (sb, moneys, $"\nвыручка: {moneys |> linq.to_enumerable() |> linq.sum(x => x.Key * x.Value)}");
+};
+
+gets = (count, b, mc) => {
+    using linq as linq;
+    sb = new System.Text.StringBuilder();
+    sb.AppendLine("b([");
+    i = count;
+    while ((i -= 1) >= 0)
+        sb.AppendLine($"    ({^b}, [{*{1: 100%, 17: 50%, 34: 2%, 85: 1%, 493: 0.5%, 986: 0.25%, 2465: 0.1%} |> linq.take(^mc) |> linq.jts(", ")}]),");
+    sb.AppendLine("])");
+    using console;
+    console.writeln(x = sb.ToString());
+    return x;
+};
+
+gets = (count, b, mc) => {
+    using linq as linq;
+    sb = new System.Text.StringBuilder();
+    sb.AppendLine("b([");
+    i = count;
+    while ((i -= 1) >= 0)
+        sb.AppendLine($"    ({^b}, [{*{1: 500%, 17: 50%, 34: 2%, 85: 1%, 493: 0.5%, 986: 0.25%, 2465: 0.1%} |> linq.take(^mc) |> linq.jts(", ")}]),//{count - i - 1}");
+    sb.AppendLine("])");
+    using console;
+    console.writeln(x = sb.ToString());
+    return x;
+};
+
+using slt;
+slt.eval(self, gets(100, 5..20, 10..50));
