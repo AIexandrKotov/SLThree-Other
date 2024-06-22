@@ -1,0 +1,31 @@
+//задача печеньки
+//есть печеньки разного уровня сытости, есть гномы разного уровня голодности, кол-во не обязательно должно совпадать
+//выяснить сколько персон сможем насытить
+//каждый ест только одну, 
+
+cook = (list<f64> cookies, list<f64> dwarfs): i64 => {
+    start_count = dwarfs.Count;
+    cookies.Sort();
+    dwarfs.Sort();
+    
+    dwarf_id = 0;
+    while (dwarf_id < dwarfs.Count) {
+        found_cookie = false;
+        cookie_id = 0;
+        while (cookie_id < cookies.Count) {
+            if (dwarfs[dwarf_id as i32] <= cookies[cookie_id as i32]) {
+                cookies.RemoveAt(cookie_id as i32);
+                found_cookie = true;
+                break;
+            }
+            cookie_id += 1;
+        }
+        if (found_cookie)
+            dwarfs.RemoveAt(dwarf_id as i32);
+        else
+            dwarf_id += 1;
+    }
+    return start_count - dwarfs.Count;
+};
+
+cook(<f64>[1, 2], <f64>[1, 2]);
