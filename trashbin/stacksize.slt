@@ -1,0 +1,11 @@
+append() {
+    static filename = "countstack.txt";
+    static using System.IO.File;
+    x = if (File.Exists(filename)) (using i64).Parse(File.ReadAllText(filename)) else 0;
+    File.WriteAllText(filename, (x + 1).ToString());
+};
+
+f() {
+    this.append();
+    this.f();
+};
