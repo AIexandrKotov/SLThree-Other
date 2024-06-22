@@ -1,0 +1,25 @@
+otrezok = (arr) => {
+    arr.Sort();
+    ret = new list();
+    
+    if (arr.Count == 0) return ret;
+    cur = arr[0];
+    i = 0;
+    while ((i += 1) < arr.Count) {
+        (l, r) = arr[i];
+        if (l > cur.Item2) {
+            ret.Add(cur);
+            cur = arr[i];
+        }
+        else {
+            if (r > cur.Item2) {
+                cur.Item2 = r;
+            }
+        }
+    }
+    ret.Add(cur);
+    
+    return ret;
+};
+
+otrezok(<tuple<i64, i64>>[(1, 3), (2, 5), (0, 7)]);
