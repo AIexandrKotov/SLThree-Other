@@ -1,0 +1,122 @@
+context HORSE {
+    killing_places = (i64 x, i64 y) => {
+        lst = [];
+        
+        lst.Add((x, y));
+        if (x - 2 >= 0) {
+            if (y - 1 >= 0)
+                lst.Add((x - 2, y - 1));
+            if (y + 1 < 8)
+                lst.Add((x - 2, y + 1));
+        }
+        if (x - 1 >= 0) {
+            if (y - 2 >= 0)
+                lst.Add((x - 1, y - 2));
+            if (y + 2 < 8)
+                lst.Add((x - 1, y + 2));
+        }
+        if (x + 1 < 8) {
+            if (y - 2 >= 0)
+                lst.Add((x + 1, y - 2));
+            if (y + 2 < 8)
+                lst.Add((x + 1, y + 2));
+        }
+        if (x + 2 < 8) {
+            if (y - 1 >= 0)
+                lst.Add((x + 2, y - 1));
+            if (y + 1 < 8)
+                lst.Add((x + 2, y + 1));
+        }
+        return lst;
+    };
+    
+    
+    repr = lst => {
+        using console;
+        using linq;
+        i = 0;
+        console.writeln($"  {this.alpha |> linq.to_enumerable() |> linq.jts(" ")}\n");
+        foreach (x in lst) {
+            console.writeln($"{8 - i} {x |> linq.jts(" ")} {8 - i}");
+            i += 1;
+        }
+        console.writeln($"\n  {this.alpha |> linq.to_enumerable() |> linq.jts(" ")}");
+    };
+    
+    
+    fill_horses = (h) => {
+        lst = [];
+        i = -1; while ((i += 1) < 8) lst.Add(["_", "_", "_", "_", "_", "_", "_", "_"]);
+        foreach (x in h)
+            lst[x.Item1][x.Item2] = "H";
+        return lst;
+    };
+    
+    
+    fill_horses_wa = (h) => {
+        lst = this.fill_horses(h);
+        foreach (horse in h)
+            foreach (x in this.killing_places(horse.Item1, horse.Item2)) {
+                if (lst[x.Item1][x.Item2] != "H")
+                    lst[x.Item1][x.Item2] = " ";
+            }
+        return lst;
+    };
+    
+    
+    fill = (x, y) => {
+        (x, y) = (y, x);
+        lst = this.fill_horses([(x, y)]);
+        foreach (x in this.killing_places(x, y)) {
+            lst[x.Item1][x.Item2] = 1;
+        }
+        return lst;
+    };
+    
+    
+    update_killings = (horse) => {
+        using linq;
+        ret = [];
+        foreach (x in horse)
+            ret.AddRange(this.killing_places(x.Item1, x.Item2));
+        return ret;
+    };
+    
+    
+    alpha = "abcdefgh";
+    sleep = 200i32;
+    
+    
+    horse_placing = () => {
+        using console;
+        using System.Threading.Thread;
+        horses = [];
+        flag = true;
+        while (flag) {
+            flag = false;
+            prohibs = this.update_killings(horses);
+            i = -1;
+            while ((i += 1) < 8) {
+                j = -1;
+                br = false;
+                while ((j += 1) < 8) {
+                    if (!prohibs.Contains((i, j))) {
+                        horses.Add((i, j));
+                        prohibs = this.update_killings(horses);
+                        console.writeln(this.repr(this.fill_horses_wa(horses)));
+                        Thread.Sleep(this.sleep);
+                        flag = true;
+                        j += 1;
+                    }
+                }
+                if (br) break;
+            }
+        }
+        return this.repr(this.fill_horses_wa(horses));
+    };
+}
+
+using console;
+using linq;
+
+console.writeln(HORSE.horse_placing());
