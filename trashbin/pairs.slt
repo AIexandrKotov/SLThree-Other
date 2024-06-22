@@ -1,0 +1,16 @@
+// набор цифр, все целые положительные, нужно сложить в паре, найти из каждой пары минимум, и все минимумы просуммировать, найти максимальную суммую из минимумов
+
+maxsum = (numbers): i64 => {
+    if (numbers.Length < 2) return 0;
+    
+    using System.Array;
+    Array.Sort(numbers);
+    
+    sum = 0;
+    i = 0;
+    while (i < numbers.Length - 1) {
+        if (i % 2 == 0) sum += numbers[i];
+        i += 1;
+    }
+    return sum;
+};
